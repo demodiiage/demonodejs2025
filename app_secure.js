@@ -1,6 +1,6 @@
 // Fichier: app.js
 // Application Node.js Express avec des vulnérabilités OWASP intégrées
-
+// Correction
 require("dotenv").config(); // Chargement des variables d'environnement
 const express = require("express");
 const jwt = require("jsonwebtoken");
