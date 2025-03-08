@@ -7,11 +7,16 @@ const mysql = require("mysql");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const xss = require("xss-clean");
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(helmet());
+app.use(xss());
 
 const secretKey = "supersecretkey";
 const tokenExpiry = "1h"; // Ajouter une expiration pour les tokens JWT
@@ -27,6 +32,13 @@ db.connect((err) => {
   if (err) throw err;
   console.log("Connecté à MySQL");
 });
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 app.get("/user", (req, res) => {
   const email = req.query.email;
